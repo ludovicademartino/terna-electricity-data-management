@@ -1,0 +1,22 @@
+# Data — re-downloadable from the Terna Download Center, see data/README.md
+data/*.csv
+data/*.xlsx
+data/*.zip
+
+# Database dumps
+*.dump
+*.sql.gz
+*.bak
+
+# macOS
+.DS_Store
+.AppleDouble
+._*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Office temporary files
+~$*
