@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Query 4 — Congestioni MSD sulla rete elettrica</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b22; --line:#2a323d;
+    --txt:#e6edf3; --dim:#8b98a5; --accent:#ffcb47;
+    --it:#ff4d4d; --fo:#4d8dff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--txt);overflow:hidden}
+  #map{position:absolute;inset:0;background:var(--bg);z-index:1}
+
+  .panel{
+    position:absolute;top:18px;left:18px;z-index:1000;
+    background:rgba(22,27,34,.94);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;max-width:320px;
+    box-shadow:0 12px 40px rgba(0,0,0,.5);
+  }
+  .panel h1{font-size:15px;font-weight:800;letter-spacing:.02em;line-height:1.25}
+  .panel h1 span{color:var(--accent)}
+  .panel .sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5}
+  .stats{display:flex;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .stat{flex:1}
+  .stat .n{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--accent)}
+  .stat .l{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+  .legend{
+    position:absolute;bottom:18px;left:18px;z-index:1000;
+    background:rgba(22,27,34,.94);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    font-size:11px;box-shadow:0 8px 24px rgba(0,0,0,.4)
+  }
+  .legend .row{display:flex;align-items:center;gap:8px;margin:5px 0}
+  .legend .dot{width:12px;height:12px;border-radius:50%;border:2px solid #fff}
+  .legend .grad{width:90px;height:9px;border-radius:5px;
+    background:linear-gradient(90deg,#ffe08a,#ff8c42,#c81e1e)}
+  .legend .ttl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:7px}
+
+  .leaflet-tooltip.tip{
+    background:#0e1116;border:1px solid var(--accent);color:var(--txt);
+    border-radius:8px;font-family:'Space Mono',monospace;font-size:11px;
+    padding:7px 10px;box-shadow:0 4px 16px rgba(0,0,0,.6)
+  }
+  .leaflet-tooltip.tip::before{display:none}
+  .tip b{color:var(--accent)}
+  .nodelabel{font-family:'Archivo',sans-serif;font-weight:600;font-size:11px;
+    color:var(--txt);text-shadow:0 0 4px #000,0 0 4px #000,0 0 4px #000;background:none;border:none;box-shadow:none}
+  .nodelabel::before{display:none}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="panel">
+  <h1>Query 4 — Congestioni del <span>Mercato dei Servizi di Dispacciamento</span></h1>
+  <div class="sub">Coppie di zone con margine medio sotto la soglia globale (4326.5 MW). Aggregazione su MSD1–MSD6.</div>
+  <div class="stats">
+    <div class="stat"><div class="n">162</div><div class="l">righe SQL<br>(coppia×sessione)</div></div>
+    <div class="stat"><div class="n">27</div><div class="l">collegamenti<br>geografici</div></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="ttl">Legenda</div>
+  <div class="row"><span class="dot" style="background:var(--it)"></span> Zona italiana</div>
+  <div class="row"><span class="dot" style="background:var(--fo)"></span> Zona estera / coupling</div>
+  <div class="row" style="margin-top:9px"><span class="grad"></span></div>
+  <div class="row" style="gap:42px;font-family:'Space Mono',monospace;color:var(--dim);font-size:9px">
+    <span>poco</span><span>molto</span></div>
+  <div class="ttl" style="margin-top:4px">congestione →</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const DATA = {"nodes": [{"id":"Austria 2","lat":46.6,"lon":13.8,"italian":false},{"id":"BSP","lat":46.05,"lon":14.51,"italian":false},{"id":"Calabria","lat":38.91,"lon":16.59,"italian":true},{"id":"Centre-North","lat":43.77,"lon":11.25,"italian":true},{"id":"Centre-South","lat":41.9,"lon":12.5,"italian":true},{"id":"Corsica","lat":41.93,"lon":8.74,"italian":false},{"id":"Corsica AC","lat":42.7,"lon":9.45,"italian":false},{"id":"Coupling","lat":50.85,"lon":4.35,"italian":false},{"id":"France 2","lat":43.7,"lon":7.26,"italian":false},{"id":"Greece 2","lat":37.98,"lon":23.73,"italian":false},{"id":"Malta","lat":35.9,"lon":14.51,"italian":false},{"id":"North","lat":45.46,"lon":9.19,"italian":true},{"id":"Sardinia","lat":39.22,"lon":9.12,"italian":true},{"id":"Sicily","lat":38.12,"lon":13.36,"italian":true},{"id":"South","lat":40.85,"lon":14.27,"italian":true},{"id":"Switzerland 2","lat":46.0,"lon":8.95,"italian":false}],
+"edges": [{"from":"Austria 2","to":"Coupling","margin":48.0,"nsess":6,"intensity":0.984},{"from":"BSP","to":"Coupling","margin":194.9,"nsess":6,"intensity":0.944},{"from":"Calabria","to":"Sicily","margin":423.6,"nsess":6,"intensity":0.882},{"from":"Calabria","to":"South","margin":1864.2,"nsess":6,"intensity":0.492},{"from":"Centre-North","to":"Centre-South","margin":3593.0,"nsess":6,"intensity":0.023},{"from":"Centre-North","to":"Corsica","margin":2.3,"nsess":6,"intensity":0.996},{"from":"Centre-South","to":"Centre-North","margin":3328.2,"nsess":6,"intensity":0.095},{"from":"Centre-South","to":"Sardinia","margin":581.6,"nsess":6,"intensity":0.839},{"from":"Corsica","to":"Centre-North","margin":2.3,"nsess":6,"intensity":0.996},{"from":"Corsica","to":"Sardinia","margin":259.7,"nsess":6,"intensity":0.927},{"from":"Corsica AC","to":"Sardinia","margin":61.8,"nsess":6,"intensity":0.98},{"from":"Coupling","to":"Austria 2","margin":300.5,"nsess":6,"intensity":0.916},{"from":"Coupling","to":"BSP","margin":994.2,"nsess":6,"intensity":0.728},{"from":"Coupling","to":"Switzerland 2","margin":1839.5,"nsess":6,"intensity":0.498},{"from":"France 2","to":"Coupling","margin":-10.6,"nsess":6,"intensity":1.0},{"from":"Greece 2","to":"South","margin":115.0,"nsess":6,"intensity":0.966},{"from":"Malta","to":"Sicily","margin":355.3,"nsess":6,"intensity":0.901},{"from":"North","to":"Centre-North","margin":3507.7,"nsess":6,"intensity":0.046},{"from":"Sardinia","to":"Centre-South","margin":480.2,"nsess":6,"intensity":0.867},{"from":"Sardinia","to":"Corsica","margin":25.1,"nsess":6,"intensity":0.99},{"from":"Sardinia","to":"Corsica AC","margin":78.2,"nsess":6,"intensity":0.976},{"from":"Sicily","to":"Calabria","margin":1843.8,"nsess":6,"intensity":0.497},{"from":"Sicily","to":"Malta","margin":94.7,"nsess":6,"intensity":0.971},{"from":"South","to":"Calabria","margin":2392.1,"nsess":6,"intensity":0.349},{"from":"South","to":"Centre-South","margin":3297.7,"nsess":6,"intensity":0.103},{"from":"South","to":"Greece 2","margin":847.6,"nsess":6,"intensity":0.767},{"from":"Switzerland 2","to":"Coupling","margin":3677.5,"nsess":6,"intensity":0.0}]};
+
+const map = L.map('map',{zoomControl:true,attributionControl:true}).setView([43.5,12.5],5);
+// Basemap scuro senza API key. La versione originale usava
+// https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png, che CARTO ha
+// nel frattempo messo dietro a una chiave (le tile arrivano con il watermark
+// "API KEY REQUIRED").
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{
+  maxZoom:16, attribution:'Tiles &copy; Esri &mdash; dati Terna'
+}).addTo(map);
+
+const pos = {};
+DATA.nodes.forEach(n=>pos[n.id]=[n.lat,n.lon]);
+
+// colore per intensita' congestione (giallo -> rosso scuro)
+function heat(t){
+  // t: 0=poco, 1=molto
+  const stops=[[255,224,138],[255,140,66],[200,30,30]];
+  let i = t<0.5 ? 0 : 1;
+  let f = t<0.5 ? t/0.5 : (t-0.5)/0.5;
+  const a=stops[i],b=stops[i+1];
+  const c=a.map((v,k)=>Math.round(v+(b[k]-v)*f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+// disegna archi come curve (per distinguere A->B da B->A)
+DATA.edges.forEach(e=>{
+  const p1=pos[e.from], p2=pos[e.to];
+  if(!p1||!p2) return;
+  // punto di controllo: a meta', spostato perpendicolarmente
+  const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+  const dx=p2[0]-p1[0], dy=p2[1]-p1[1];
+  const off=0.13; // curvatura
+  const cx=mx - dy*off, cy=my + dx*off;
+  // campiona la bezier quadratica
+  const pts=[];
+  for(let t=0;t<=1.001;t+=0.05){
+    const a=(1-t)*(1-t), b=2*(1-t)*t, c=t*t;
+    pts.push([a*p1[0]+b*cx+c*p2[0], a*p1[1]+b*cy+c*p2[1]]);
+  }
+  const col=heat(e.intensity);
+  const w=1.5 + e.intensity*5;
+  const line=L.polyline(pts,{color:col,weight:w,opacity:.85,lineCap:'round'}).addTo(map);
+  line.bindTooltip(
+    `<b>${e.from} → ${e.to}</b><br>margine medio: ${e.margin} MW<br>sessioni congest.: ${e.nsess}/6`,
+    {className:'tip',sticky:true}
+  );
+  line.on('mouseover',()=>line.setStyle({weight:w+2,opacity:1}));
+  line.on('mouseout',()=>line.setStyle({weight:w,opacity:.85}));
+});
+
+// disegna nodi
+DATA.nodes.forEach(n=>{
+  const col = n.italian ? getCss('--it') : getCss('--fo');
+  const m=L.circleMarker([n.lat,n.lon],{
+    radius:7,fillColor:col,color:'#fff',weight:2,fillOpacity:1
+  }).addTo(map);
+  m.bindTooltip(n.id,{permanent:true,direction:'top',className:'nodelabel',offset:[0,-6]});
+});
+
+function getCss(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+
+map.fitBounds(L.latLngBounds(DATA.nodes.map(n=>[n.lat,n.lon])).pad(0.25));
+</script>
+</body>
+</html>
