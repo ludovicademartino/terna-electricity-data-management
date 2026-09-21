@@ -15,23 +15,23 @@ The dataset used for the homeworks covers **January, February and March 2026**.
 
 ## Files to download
 
-| Terna section (IT)       | Expected file                | Loads into                     | Rows    |
-| ------------------------ | ---------------------------- | ------------------------------ | ------- |
-| Fabbisogno               | `FABBISOGNO.csv`             | `raw.demand_data`              | 19,202  |
-| Generazione              | `GENERAZIONE.csv`            | `raw.generation_data`          | 14,402  |
-| Trasmissione             | `TRASMISSIONE.csv`           | `raw.transmission_data`        | 19,202  |
-| Mercato MGP              | `MERCATO_MGP.csv`            | `raw.day_ahead_market`         | 29,570  |
-| Mercato MI               | `MERCATO_MI.csv`             | `raw.intraday_market`          | 67,058  |
-| Mercato MSD              | `MERCATO MSD(Export).csv`    | `raw.balancing_market`         | 375,234 |
-| Mercato MSD input        | `MERCATO_MSD_INPUT(Export).csv` | `raw.balancing_market_input` | 61,042  |
-| Adeguatezza consuntivo   | `ADEGUATEZZA_CONSUNTIVO.csv` | `raw.adequacy_actual`          | 6,050   |
-| Adeguatezza previsione   | `ADEGUATEZZA_PREVISIONE.csv` | `raw.adequacy_forecast`        | 22,292  |
-| Connessioni FER          | `CONNESSIONI.csv`            | `raw.connections`              | 67      |
+| Terna section (IT)     | File as exported                       | Loads into                   | Rows    |
+| ---------------------- | -------------------------------------- | ---------------------------- | ------: |
+| Fabbisogno             | `FABBISOGNO_DATI(Export).csv`          | `raw.demand_data`            |  19,200 |
+| Generazione            | `GENERAZIONE_DATI(Export).csv`         | `raw.generation_data`        |  14,400 |
+| Trasmissione           | `TRASMISSIONE_DATI(Export).csv`        | `raw.transmission_data`      |  19,200 |
+| Mercato MGP            | `MERCATO_GIORNO_PRIMA(Export).csv`     | `raw.day_ahead_market`       |  29,568 |
+| Mercato MI             | `MERCATO_INFRAGIORNALIERO(Export).csv` | `raw.intraday_market`        |  67,056 |
+| Mercato MSD            | `MERCATO MSD(Export).csv`              | `raw.balancing_market`       | 375,232 |
+| Mercato MSD input      | `MERCATO_MSD_INPUT(Export).csv`        | `raw.balancing_market_input` |  61,040 |
+| Adeguatezza consuntivo | `ADEGUATEZZA_CONSUNTIVO(Export).csv`   | `raw.adequacy_actual`        |   6,048 |
+| Adeguatezza previsione | `ADEGUATEZZA_PREVISIONE(Export).csv`   | `raw.adequacy_forecast`      |  22,290 |
+| Connessioni FER        | `CONNESSIONI(Export).csv`              | `raw.connections`            |      65 |
 
-The two MSD file names are kept exactly as exported because the Neo4j
-`LOAD CSV` statements in
-[`nosql/neo4j/query04_msd_graph.cypher`](../nosql/neo4j/query04_msd_graph.cypher)
-reference them verbatim (URL-encoded).
+Row counts are data rows, i.e. what lands in `clean` — each file also carries a
+header and the `Applied filters` footer, so it is two lines longer on disk.
+Keep the names exactly as the Download Center exports them: the Neo4j
+`LOAD CSV` statements reference the two MSD files verbatim (URL-encoded).
 
 ## A quirk worth knowing
 
@@ -45,14 +45,14 @@ It is deliberately kept in the `raw` layer and filtered out on the way into
 **PostgreSQL** — from `psql`, after running `sql/01_raw_schema.sql`:
 
 ```sql
-\copy raw.demand_data FROM 'data/FABBISOGNO.csv' WITH (FORMAT csv, HEADER true);
+\copy raw.demand_data FROM 'data/FABBISOGNO_DATI(Export).csv' WITH (FORMAT csv, HEADER true);
 ```
 
 **MongoDB** — import each CSV as its own collection, either with
 Compass (*Add Data → Import file*) or with `mongoimport`:
 
 ```bash
-mongoimport --db terna --collection demand --type csv --headerline --file data/FABBISOGNO.csv
+mongoimport --db terna --collection demand --type csv --headerline --file 'data/FABBISOGNO_DATI(Export).csv'
 ```
 
 Collection names must match those used in

@@ -43,20 +43,20 @@ concrete rather than theoretical.
 ## The dataset
 
 Ten CSV exports from the [Terna Download Center](https://www.terna.it/en/electric-system/transparency-report/download-center),
-covering **January–March 2026**, ~614,000 rows in total.
+covering **January–March 2026**, ~614,000 data rows in total.
 
 | Domain | Content | Rows |
 | --- | --- | ---: |
-| Demand | Load and forecast load per bidding zone, 15-min | 19,202 |
-| Generation | Actual generation by primary source | 14,402 |
-| Transmission | Cross-border import/export and scheduled balance | 19,202 |
-| Day-ahead market (MGP) | Forecast transit limits between zones | 29,570 |
-| Intra-day market (MI) | Transit limits, sessions CRIDA1–3 | 67,058 |
-| Balancing market (MSD) | Margins, sessions MSD1–6 | 375,234 |
-| Balancing market input | Forecast load per session | 61,042 |
-| Adequacy (actual) | Available capacity by macroarea and fuel | 6,050 |
-| Adequacy (forecast) | Forecast capacity per macro-user | 22,292 |
-| Connections | RES grid-connection requests by region | 67 |
+| Demand | Load and forecast load per bidding zone, 15-min | 19,200 |
+| Generation | Actual generation by primary source | 14,400 |
+| Transmission | Cross-border import/export and scheduled balance | 19,200 |
+| Day-ahead market (MGP) | Forecast transit limits between zones | 29,568 |
+| Intra-day market (MI) | Transit limits, sessions CRIDA1–3 | 67,056 |
+| Balancing market (MSD) | Margins, sessions MSD1–6 | 375,232 |
+| Balancing market input | Forecast load per session | 61,040 |
+| Adequacy (actual) | Available capacity by macroarea and fuel | 6,048 |
+| Adequacy (forecast) | Forecast capacity per macro-user | 22,290 |
+| Connections | RES grid-connection requests by region | 65 |
 
 The CSVs are not tracked here — see [`data/README.md`](data/README.md) for how
 to download and load them.
