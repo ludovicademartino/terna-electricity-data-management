@@ -46,10 +46,10 @@ ORDER BY AVG(ABS(total_load_mw - forecast_total_load_mw)) DESC, date;
 -- -----------------------------------------------------------------------------
 SELECT
     g.primary_source,
-    AVG(g.actual_generation) AS avg_generation_mw,
-    MIN(g.actual_generation) AS min_generation_mw,
-    MAX(g.actual_generation) AS max_generation_mw,
-    SUM(g.actual_generation) AS total_generation_mw
+    AVG(g.actual_generation) AS avg_generation_gw,
+    MIN(g.actual_generation) AS min_generation_gw,
+    MAX(g.actual_generation) AS max_generation_gw,
+    SUM(g.actual_generation) AS total_generation_gw
 FROM clean.generation_data g, clean.demand_data d
 WHERE g.date = d.date
   AND d.bidding_zone = 'Italy'
@@ -206,9 +206,9 @@ ORDER BY SUM(c.capacity_mw) DESC;
 -- -----------------------------------------------------------------------------
 SELECT
     g.primary_source,
-    AVG(g.actual_generation) AS avg_generation_peak_mw,
-    MIN(g.actual_generation) AS min_generation_peak_mw,
-    MAX(g.actual_generation) AS max_generation_peak_mw,
+    AVG(g.actual_generation) AS avg_generation_peak_gw,
+    MIN(g.actual_generation) AS min_generation_peak_gw,
+    MAX(g.actual_generation) AS max_generation_peak_gw,
     COUNT(*)                 AS num_peak_observations
 FROM clean.generation_data g, clean.demand_data d
 WHERE g.date = d.date
@@ -225,7 +225,7 @@ WHERE g.date = d.date
           AND DATE(d2.date) = DATE(d.date)
   )
 GROUP BY g.primary_source
-ORDER BY avg_generation_peak_mw DESC;
+ORDER BY avg_generation_peak_gw DESC;
 
 
 -- -----------------------------------------------------------------------------
@@ -271,8 +271,8 @@ ORDER BY avg_msd_margin_mw DESC, peak_margin_mw DESC;
 -- -----------------------------------------------------------------------------
 SELECT
     g.primary_source,
-    AVG(g.actual_generation) AS avg_generation_critical_mw,
-    MAX(g.actual_generation) AS peak_generation_critical_mw,
+    AVG(g.actual_generation) AS avg_generation_critical_gw,
+    MAX(g.actual_generation) AS peak_generation_critical_gw,
     COUNT(*)                 AS num_critical_obs
 FROM clean.generation_data g
 WHERE EXISTS (
@@ -288,4 +288,4 @@ WHERE EXISTS (
       )
 )
 GROUP BY g.primary_source
-ORDER BY avg_generation_critical_mw DESC;
+ORDER BY avg_generation_critical_gw DESC;

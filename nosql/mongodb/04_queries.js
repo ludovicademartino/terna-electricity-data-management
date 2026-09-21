@@ -66,14 +66,14 @@ db.generation.aggregate([
   { $unwind: "$pk" },
   { $group: {
       _id: "$primary_source",
-      avg_generation_mw: { $avg: "$actual_generation" },
-      min_generation_mw: { $min: "$actual_generation" },
-      max_generation_mw: { $max: "$actual_generation" },
-      total_generation_mw: { $sum: "$actual_generation" }
+      avg_generation_gw: { $avg: "$actual_generation" },
+      min_generation_gw: { $min: "$actual_generation" },
+      max_generation_gw: { $max: "$actual_generation" },
+      total_generation_gw: { $sum: "$actual_generation" }
   }},
-  { $sort: { total_generation_mw: -1 } },
-  { $project: { _id: 0, primary_source: "$_id", avg_generation_mw: 1, min_generation_mw: 1,
-      max_generation_mw: 1, total_generation_mw: 1 } }
+  { $sort: { total_generation_gw: -1 } },
+  { $project: { _id: 0, primary_source: "$_id", avg_generation_gw: 1, min_generation_gw: 1,
+      max_generation_gw: 1, total_generation_gw: 1 } }
 ]);
 
 
@@ -252,14 +252,14 @@ db.generation.aggregate([
   { $unwind: "$pk" },
   { $group: {
       _id: "$primary_source",
-      avg_generation_peak_mw: { $avg: "$actual_generation" },
-      min_generation_peak_mw: { $min: "$actual_generation" },
-      max_generation_peak_mw: { $max: "$actual_generation" },
+      avg_generation_peak_gw: { $avg: "$actual_generation" },
+      min_generation_peak_gw: { $min: "$actual_generation" },
+      max_generation_peak_gw: { $max: "$actual_generation" },
       num_peak_observations: { $sum: 1 }
   }},
-  { $sort: { avg_generation_peak_mw: -1 } },
-  { $project: { _id: 0, primary_source: "$_id", avg_generation_peak_mw: 1,
-      min_generation_peak_mw: 1, max_generation_peak_mw: 1, num_peak_observations: 1 } }
+  { $sort: { avg_generation_peak_gw: -1 } },
+  { $project: { _id: 0, primary_source: "$_id", avg_generation_peak_gw: 1,
+      min_generation_peak_gw: 1, max_generation_peak_gw: 1, num_peak_observations: 1 } }
 ]);
 
 
@@ -346,11 +346,11 @@ db.generation.aggregate([
   { $unwind: "$c" },
   { $group: {
       _id: "$primary_source",
-      avg_generation_critical_mw: { $avg: "$actual_generation" },
-      peak_generation_critical_mw: { $max: "$actual_generation" },
+      avg_generation_critical_gw: { $avg: "$actual_generation" },
+      peak_generation_critical_gw: { $max: "$actual_generation" },
       num_critical_obs: { $sum: 1 }
   }},
-  { $sort: { avg_generation_critical_mw: -1 } },
-  { $project: { _id: 0, primary_source: "$_id", avg_generation_critical_mw: 1,
-      peak_generation_critical_mw: 1, num_critical_obs: 1 } }
+  { $sort: { avg_generation_critical_gw: -1 } },
+  { $project: { _id: 0, primary_source: "$_id", avg_generation_critical_gw: 1,
+      peak_generation_critical_gw: 1, num_critical_obs: 1 } }
 ]);

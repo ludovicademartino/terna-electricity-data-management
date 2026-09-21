@@ -82,9 +82,9 @@ CREATE INDEX idx_demand_date_only ON clean.demand_data (date_only);
 -- Fast version
 SELECT
     g.primary_source,
-    AVG(g.actual_generation) AS avg_generation_peak_mw,
-    MIN(g.actual_generation) AS min_generation_peak_mw,
-    MAX(g.actual_generation) AS max_generation_peak_mw,
+    AVG(g.actual_generation) AS avg_generation_peak_gw,
+    MIN(g.actual_generation) AS min_generation_peak_gw,
+    MAX(g.actual_generation) AS max_generation_peak_gw,
     COUNT(*)                 AS num_peak_observations
 FROM clean.generation_data g, clean.demand_data d, clean.daily_italy_avg_load da
 WHERE g.date = d.date
@@ -97,7 +97,7 @@ WHERE g.date = d.date
   )
   AND d.total_load_mw > da.avg_daily_load_italy
 GROUP BY g.primary_source
-ORDER BY avg_generation_peak_mw DESC;
+ORDER BY avg_generation_peak_gw DESC;
 
 
 -- #############################################################################
@@ -145,13 +145,13 @@ CREATE INDEX idx_crit_hours ON clean.critical_hours (date);
 -- Fast version: the nested EXISTS collapses into a plain join
 SELECT
     g.primary_source,
-    AVG(g.actual_generation) AS avg_generation_critical_mw,
-    MAX(g.actual_generation) AS peak_generation_critical_mw,
+    AVG(g.actual_generation) AS avg_generation_critical_gw,
+    MAX(g.actual_generation) AS peak_generation_critical_gw,
     COUNT(*)                 AS num_critical_obs
 FROM clean.generation_data g, clean.critical_hours c
 WHERE g.date = c.date
 GROUP BY g.primary_source
-ORDER BY avg_generation_critical_mw DESC;
+ORDER BY avg_generation_critical_gw DESC;
 
 
 -- #############################################################################

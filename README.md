@@ -63,6 +63,65 @@ to download and load them.
 
 ---
 
+## What the data says
+
+Four things came out of the ten queries.
+
+**The forecast is equally good everywhere — the ranking measures zone size, not
+difficulty.** In absolute terms North looks far and away the hardest zone to
+predict: a mean absolute error of 281 MW against Sardinia's 12 MW. Measured
+against the load each zone actually carries, the spread collapses — **every one
+of the seven zones sits between 1.34% and 1.37%**. North is not harder to
+forecast, it is twenty times larger. Query 1 ranks by absolute error, so it
+surfaces size before difficulty; worth knowing before reading its output as a
+quality ranking.
+
+| Zone | Mean abs. error | Mean load | Relative |
+| --- | ---: | ---: | ---: |
+| Centre-South | 81 MW | 5,951 MW | 1.37% |
+| Centre-North | 40 MW | 2,909 MW | 1.37% |
+| Sicily | 29 MW | 2,127 MW | 1.36% |
+| North | 281 MW | 20,623 MW | 1.36% |
+| Sardinia | 12 MW | 902 MW | 1.36% |
+| Calabria | 12 MW | 880 MW | 1.35% |
+| South | 31 MW | 2,352 MW | 1.34% |
+
+**Two borders carry the imports.** In the hours when a country imports above its
+own average, France averages 3,927 MW (peak 4,615) and Switzerland 3,441 MW
+(peak 4,481). Slovenia, Montenegro, Greece and Austria are all under 630 MW — an
+order of magnitude down. Italy's import exposure is concentrated on the
+north-western frontier.
+
+**Congestion sits on the thin cables, not on the backbone.** Of the 27 congested
+links, the 17 that cross a sea or a border have a median margin of **115 MW**;
+the 10 mainland links have **2,128 MW** — eighteen times wider, and only
+marginally under the 4,326.5 MW threshold. The tightest of all are
+Centre-North↔Corsica (2.3 MW) and Sardinia–Corsica (25 MW). In Neo4j the same
+result shows up as structure rather than as numbers: the congested network
+splits into two components, with the islands forming their own cluster.
+
+**And the renewable queue sits behind exactly those cables.** Of the 195 GW of
+connection capacity that never reached a contract, **86% is in the South and the
+islands** — Puglia alone accounts for 55 GW across 589 applications, Sardinia
+for 43 GW, Sicily for 34 GW. Read next to the previous finding, the two queries
+tell one story: **the regions with the most renewable capacity waiting to
+connect are the ones behind the weakest links in the grid.**
+
+| Region | Capacity never contracted | Applications |
+| --- | ---: | ---: |
+| Puglia | 54,628 MW | 589 |
+| Sardinia | 42,544 MW | 599 |
+| Sicily | 34,047 MW | 332 |
+| Basilicata | 19,815 MW | 662 |
+
+> **A note on units.** `actual_generation` is published in **GW**, not MW, and
+> the query aliases are named accordingly. The cross-check is internal to the
+> dataset: summed generation is 18.0 against a national load of 26.5 GW, and the
+> 8.5 GW gap matches the imports computed by Query 3; geothermal sits flat at
+> 0.60, which is Italy's installed geothermal capacity.
+
+---
+
 ## Repository layout
 
 ```
