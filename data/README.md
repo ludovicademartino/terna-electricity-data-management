@@ -29,7 +29,7 @@ filtered to `Year is 2026; Month is marzo`, which the footer of each file states
 | Adeguatezza previsione | `ADEGUATEZZA_PREVISIONE(Export).csv`   | `raw.adequacy_forecast`      |  22,290 |
 | Connessioni FER        | `CONNESSIONI(Export).csv`              | `raw.connections`            |      65 |
 
-Row counts are data rows, i.e. what lands in `clean` — each file also carries a
+Row counts are data rows, i.e. what lands in `clean`. Each file also carries a
 header and the `Applied filters` footer, so it is two lines longer on disk.
 Keep the names exactly as the Download Center exports them: the Neo4j
 `LOAD CSV` statements reference the two MSD files verbatim (URL-encoded).
@@ -43,13 +43,13 @@ It is deliberately kept in the `raw` layer and filtered out on the way into
 
 ## Loading
 
-**PostgreSQL** — from `psql`, after running `sql/01_raw_schema.sql`:
+**PostgreSQL**, from `psql`, after running `sql/01_raw_schema.sql`:
 
 ```sql
 \copy raw.demand_data FROM 'data/FABBISOGNO_DATI(Export).csv' WITH (FORMAT csv, HEADER true);
 ```
 
-**MongoDB** — import each CSV as its own collection, either with
+**MongoDB**: import each CSV as its own collection, either with
 Compass (*Add Data → Import file*) or with `mongoimport`:
 
 ```bash
