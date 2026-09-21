@@ -291,8 +291,6 @@ in Neo4j Browser, one block at a time.
 
 ## Authors
 
-**Group 35** — Data Management for Data Science, 2025/2026
-
 - Ludovica de Martino
 - Matteo Giganti
 
