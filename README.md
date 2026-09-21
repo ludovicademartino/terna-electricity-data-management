@@ -43,7 +43,7 @@ concrete rather than theoretical.
 ## The dataset
 
 Ten CSV exports from the [Terna Download Center](https://www.terna.it/en/electric-system/transparency-report/download-center),
-covering **January–March 2026**, ~614,000 data rows in total.
+covering **March 2026** (1–28 March), ~614,000 data rows in total.
 
 | Domain | Content | Rows |
 | --- | --- | ---: |

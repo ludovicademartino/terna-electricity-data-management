@@ -11,7 +11,8 @@ Italian transmission system operator:
 
 <https://www.terna.it/en/electric-system/transparency-report/download-center>
 
-The dataset used for the homeworks covers **January, February and March 2026**.
+The dataset used for the homeworks covers **March 2026**: every export is
+filtered to `Year is 2026; Month is marzo`, which the footer of each file states.
 
 ## Files to download
 
