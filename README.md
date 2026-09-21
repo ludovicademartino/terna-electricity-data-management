@@ -17,6 +17,13 @@ re-implemented on a document database (MongoDB) and a property-graph database
   <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow">
 </p>
 
+[![The congested links of Query 4, drawn on a map of Italy and its borders](docs/images/query04-congestion-map.png)](https://ludovicademartino.github.io/terna-electricity-data-management/viz/query04-congestion-map.html)
+
+<p align="center">
+  <b><a href="https://ludovicademartino.github.io/terna-electricity-data-management/viz/query04-congestion-map.html">▶ Open the interactive map</a></b><br>
+  <sub>Query 4, live: the 27 congested links of the Italian balancing market. Hover any arc for its margin.</sub>
+</p>
+
 ---
 
 ## What the project asks
@@ -186,9 +193,16 @@ foreign borders involved. Neo4j models the same query without them.
 
 ### The map
 
+**[Open it live →](%s)**
+
 [`viz/query04-congestion-map.html`](viz/query04-congestion-map.html) is a
 self-contained Leaflet page that draws the congested flows of Query 4 on a real
-map of Italy and its borders. Open it in any browser — no server, no build step.
+map of Italy and its borders. Arcs are curved so that A→B stays distinguishable
+from B→A, and coloured by congestion intensity; hovering one shows its average
+margin and forecast load.
+
+It is served from this repository through GitHub Pages, and also runs by simply
+opening the file in any browser — no server, no build step.
 
 ---
 
