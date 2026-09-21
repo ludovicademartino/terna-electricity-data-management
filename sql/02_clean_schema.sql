@@ -201,12 +201,7 @@ WHERE date NOT LIKE 'Applied filters%';
 
 -- -----------------------------------------------------------------------------
 -- GENERAZIONE / actual generation by primary source
---
--- NB: actual_generation is expressed in GW, not MW. Two checks internal to the
--- dataset confirm it: summed generation is ~18.0 against a national load of
--- ~26.5 GW, and the ~8.5 GW gap matches the imports computed by Query 3;
--- geothermal sits flat at 0.60, which is Italy's installed geothermal capacity.
--- The query aliases in 04_queries.sql are named accordingly (_gw).
+-- actual_generation is expressed in GW.
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.generation_data;
 CREATE TABLE clean.generation_data (

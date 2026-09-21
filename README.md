@@ -114,12 +114,6 @@ connect are the ones behind the weakest links in the grid.**
 | Sicily | 34,047 MW | 332 |
 | Basilicata | 19,815 MW | 662 |
 
-> **A note on units.** `actual_generation` is published in **GW**, not MW, and
-> the query aliases are named accordingly. The cross-check is internal to the
-> dataset: summed generation is 18.0 against a national load of 26.5 GW, and the
-> 8.5 GW gap matches the imports computed by Query 3; geothermal sits flat at
-> 0.60, which is Italy's installed geothermal capacity.
-
 ---
 
 ## Repository layout
