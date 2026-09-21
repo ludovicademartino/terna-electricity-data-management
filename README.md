@@ -142,10 +142,10 @@ connect are the ones behind the weakest links in the grid.**
 ├── viz/
 │   └── query04-congestion-map.html     the congested links, drawn on a real map
 ├── docs/
+│   ├── images/query04-congestion-map.png   the screenshot above
 │   ├── homework-1-2-presentation.pdf
 │   ├── homework-3-presentation.pdf
-│   ├── homework-3-report.docx
-│   └── course-assignments.pdf
+│   └── homework-3-report.docx
 └── data/                           (empty — see data/README.md)
 ```
 
